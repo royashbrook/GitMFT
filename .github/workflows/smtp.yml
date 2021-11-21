@@ -9,11 +9,10 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
 
-  set-matrix:
-    name: gen matrix to use for file loop
+  job1:
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      matrix: ${{ steps.files.outputs.added }}
     steps:
       - uses: actions/checkout@v2
 
@@ -22,15 +21,11 @@ jobs:
         with:
           format: 'json'
 
-      - id: set-matrix
-        if: steps.files.outputs.added == ''
-        run: echo "::set-output name=matrix::{steps.files.outputs.added}"
-
-  process-files:
-    needs: set-matrix
+  job2:
+    needs: job1
     runs-on: ubuntu-latest
     strategy:
-      matrix: needs.set-matrix.outputs.matrix
+      matrix: ${{fromJson(needs.job1.outputs.matrix)}}
     steps:
       - run: echo ${{matrix}}
 
