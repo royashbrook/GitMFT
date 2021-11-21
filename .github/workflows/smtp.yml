@@ -26,7 +26,7 @@ jobs:
     if: needs.job1.outputs.matrix != '[]'
     runs-on: ubuntu-latest
     strategy:
-      max-parallel: 1
+      # max-parallel: 1
       matrix:
         added-file: ${{fromJson(needs.job1.outputs.matrix)}}
     steps:
@@ -48,18 +48,14 @@ jobs:
         uses: JesseTG/rm@v1.0.2
         with:
           path: ${{matrix.added-file}}
-      - name: Push changes
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: 'remove ${{ matrix.added-file }}'
-          push_options: '--force'
-  #     - run: |
-  #         git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-  #         git config --local user.name "github-actions[bot]"
-  #         git commit -m "remove ${{ matrix.added-file }}"
-  #     - name: Push changes
-  #       uses: ad-m/github-push-action@master
-
+      - run: |
+          git commit -m "remove ${{ matrix.added-file }}" ${{ matrix.added-file }}
+          git push --force
+      # - name: Push changes
+      #   uses: stefanzweifel/git-auto-commit-action@v4
+      #   with:
+      #     commit_message: 'remove ${{ matrix.added-file }}'
+      #     push_options: '--force'
   
 
 
