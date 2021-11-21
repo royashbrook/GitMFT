@@ -37,11 +37,19 @@ jobs:
       - run: echo ${{needs.job1.outputs.matrix}}
       - uses: actions/checkout@v2
       - uses: fregante/setup-git-user@v1
-      - run: |
-          readarray -t myfiles <<<"$(jq -r '.[]' <<<'${{ needs.job1.outputs.matrix }}')"
-          for myfile in ${myfiles[@]}; do
-            git rm '${myfile}'
-          done
+      - name: Remove Files
+        shell: pwsh
+        run: |
+          $files = ${{ needs.job1.outputs.matrix }} | convertfrom-json
+          foreach($file in $files) {
+            if(test-path $file){
+              write-output "Removing $file"
+              git rm ".\$file"
+            }else{
+              write-output "Can't find $file"
+            }
+            
+          }
       - uses: stefanzweifel/git-auto-commit-action@v4
       
       # - run: git commit -m "removed file ${{ matrix.added-file }}"
