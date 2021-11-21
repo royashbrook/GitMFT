@@ -40,7 +40,7 @@ jobs:
       - run: |
           readarray -t myfiles <<<"$(jq -r '.[]' <<<'${{ needs.job1.outputs.matrix }}')"
           for myfile in ${myfiles[@]}; do
-            git rm '${{matrix.added-file}}'
+            git rm '${myfile}'
           done
       - uses: stefanzweifel/git-auto-commit-action@v4
       
