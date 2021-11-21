@@ -28,12 +28,24 @@ jobs:
       matrix:
         added-file: ${{fromJson(needs.job1.outputs.matrix)}}
     steps:
-      - run: echo ${{matrix.added-file}}
+      - run: echo "${{matrix.added-file}}"
+      - run: ls "${{matrix.added-file}}"
+
+  job3:
+    needs: job1,job2
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo ${{needs.job1.outputs.matrix}}
       - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
       - uses: fregante/setup-git-user@v1
-      - run: git rm '${{matrix.added-file}}'
-      - run: git commit -m "removed file ${{ matrix.added-file }}"
-      - run: git pull
-      - run: git push --force
+      - run: |
+        readarray -t myfiles <<<"$(jq -r '.[]' <<<'${{ needs.job1.outputs.matrix }}')"
+        for myfile in ${myfiles[@]}; do
+          git rm '${{matrix.added-file}}'
+        done
+      - uses: stefanzweifel/git-auto-commit-action@v4
+      
+      # - run: git commit -m "removed file ${{ matrix.added-file }}"
+      # - run: git pull --tags origin main
+      # # git pull
+      # - run: git push --force
