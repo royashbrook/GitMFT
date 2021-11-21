@@ -43,55 +43,65 @@ jobs:
           from: GitMFT # <user@example.com>
           body: Files added - ${{ matrix.added-file }}
           attachments: ${{ matrix.added-file }}
-      - name: Remove File
+      - name: Remove file
         uses: JesseTG/rm@v1.0.2
         with:
           path: ${{matrix.added-file}}
-      - run: git commit -m "remove ${{ matrix.added-file }}"
       - name: Push changes
-        uses: ad-m/github-push-action@master
+        uses: github-actions-x/commit@v2.8
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          push-branch: master
+          commit-message: 'remove ${{ matrix.added-file }}'
+          rebase: 'true' # pull and rebase before commit
+  #     - run: |
+  #         git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+  #         git config --local user.name "github-actions[bot]"
+  #         git commit -m "remove ${{ matrix.added-file }}"
+  #     - name: Push changes
+  #       uses: ad-m/github-push-action@master
 
   
 
 
-  # process-smtp:
-  #   runs-on: ubuntu-latest
-  #   steps:
+  # # process-smtp:
+  # #   runs-on: ubuntu-latest
+  # #   steps:
       
-  #     - uses: actions/checkout@v2
+  # #     - uses: actions/checkout@v2
 
-  #     - id: files
-  #       uses: jitterbit/get-changed-files@v1
-  #       with:
-  #         format: 'csv'
+  # #     - id: files
+  # #       uses: jitterbit/get-changed-files@v1
+  # #       with:
+  # #         format: 'csv'
 
-  #     - name: No Files Added
-  #       if: steps.files.outputs.added == ''
-  #       run: echo "No Files Added"
+  # #     - name: No Files Added
+  # #       if: steps.files.outputs.added == ''
+  # #       run: echo "No Files Added"
 
-  #     - name: Send mail
-  #       if: steps.files.outputs.added != ''
-  #       uses: dawidd6/action-send-mail@v3
-  #       with:
-  #         server_address: smtp.gmail.com
-  #         server_port: 465
-  #         username: ${{secrets.MAIL_USERNAME}}
-  #         password: ${{secrets.MAIL_PASSWORD}}
-  #         subject: Github Actions job result
-  #         to: royashbrook@me.com
-  #         from: GitMFT # <user@example.com>
-  #         body: Files added - ${{ steps.files.outputs.added }}
-  #         attachments: ${{ steps.files.outputs.added }}
+  # #     - name: Send mail
+  # #       if: steps.files.outputs.added != ''
+  # #       uses: dawidd6/action-send-mail@v3
+  # #       with:
+  # #         server_address: smtp.gmail.com
+  # #         server_port: 465
+  # #         username: ${{secrets.MAIL_USERNAME}}
+  # #         password: ${{secrets.MAIL_PASSWORD}}
+  # #         subject: Github Actions job result
+  # #         to: royashbrook@me.com
+  # #         from: GitMFT # <user@example.com>
+  # #         body: Files added - ${{ steps.files.outputs.added }}
+  # #         attachments: ${{ steps.files.outputs.added }}
 
-  #     - name: Remove File
-  #       if: steps.files.outputs.added != ''
-  #       uses: JesseTG/rm@v1.0.2
-  #       with:
-  #         path: steps.files.outputs.added
+  # #     - name: Remove File
+  # #       if: steps.files.outputs.added != ''
+  # #       uses: JesseTG/rm@v1.0.2
+  # #       with:
+  # #         path: steps.files.outputs.added
 
-  #     - name: Push changes
-  #       if: steps.files.outputs.added != ''
-  #       uses: ad-m/github-push-action@master
-  #       with:
-  #         github_token: ${{ secrets.GITHUB_TOKEN }}
-  #         branch: ${{ github.ref }}
+  # #     - name: Push changes
+  # #       if: steps.files.outputs.added != ''
+  # #       uses: ad-m/github-push-action@master
+  # #       with:
+  # #         github_token: ${{ secrets.GITHUB_TOKEN }}
+  # #         branch: ${{ github.ref }}
