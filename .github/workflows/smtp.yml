@@ -3,7 +3,7 @@ on:
   push:
     branches: [ main ]
     paths:
-      - move/smtp*
+      - smtp*
   workflow_dispatch:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -23,6 +23,7 @@ jobs:
 
   job2:
     needs: job1
+    if: needs.job1.outputs.matrix != '[]'
     runs-on: ubuntu-latest
     strategy:
       matrix:
