@@ -49,8 +49,8 @@ jobs:
         with:
           path: "${{matrix.added-file}}"
       - run: |
-          git config --local user.email <>
-          git config --local user.name jobbot
+          git config user.name "GitHub Actions Bot"
+          git config user.email "<>"
           git commit -m "remove '${{ matrix.added-file }}'" "${{ matrix.added-file }}"
           git push --force
       # - name: Push changes
