@@ -31,7 +31,6 @@ jobs:
       - run: echo ${{matrix.added-file}}
       - uses: actions/checkout@v2
       - uses: fregante/setup-git-user@v1
-      - run: |
-          git rm '${{matrix.added-file}}'
-          git commit -m "removed file ${{ matrix.added-file }}"
-          git push --force
+      - run: git rm '${{matrix.added-file}}'
+      - run: git commit -m "removed file ${{ matrix.added-file }}"
+      - run: git pull && git push --force
