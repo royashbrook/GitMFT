@@ -29,6 +29,27 @@ jobs:
         added-file: ${{fromJson(needs.job1.outputs.matrix)}}
     steps:
       - run: echo ${{matrix.added-file}}
+      - uses: actions/checkout@v2
+      - name: Send mail
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{secrets.MAIL_USERNAME}}
+          password: ${{secrets.MAIL_PASSWORD}}
+          subject: Github Actions job result
+          to: royashbrook@me.com
+          from: GitMFT # <user@example.com>
+          body: Files added - ${{ steps.files.outputs.added }}
+          attachments: ${{ steps.files.outputs.added }}
+      - name: Remove File
+        uses: JesseTG/rm@v1.0.2
+        with:
+          path: ${{matrix.added-file}}
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+
+  
 
 
   # process-smtp:
