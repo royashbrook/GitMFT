@@ -47,9 +47,11 @@ jobs:
       - name: Remove file
         uses: JesseTG/rm@v1.0.2
         with:
-          path: ${{matrix.added-file}}
+          path: "${{matrix.added-file}}"
       - run: |
-          git commit -m "remove ${{ matrix.added-file }}" ${{ matrix.added-file }}
+          git config --local user.email <>
+          git config --local user.name jobbot
+          git commit -m "remove '${{ matrix.added-file }}'" "${{ matrix.added-file }}"
           git push --force
       # - name: Push changes
       #   uses: stefanzweifel/git-auto-commit-action@v4
