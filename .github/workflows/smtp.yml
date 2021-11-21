@@ -8,54 +8,71 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  process-smtp:
+
+  set-matrix:
+    name: gen matrix to use for file loop
     runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
-      
       - uses: actions/checkout@v2
 
       - id: files
         uses: jitterbit/get-changed-files@v1
         with:
-          format: 'csv'
-      - run: |
-          echo ${{ steps.files.outputs.added }}
+          format: 'json'
 
-      - uses: haya14busa/action-cond@v1
-        id: filesadded
-        with:
-          cond: ${{ steps.files.outputs.added != '' }}
-          if_true: 1
-          if_false: 0
+      - id: set-matrix
+        if: steps.files.outputs.added == ''
+        run: echo "::set-output name=matrix::{steps.files.outputs.added}"
 
-      - id: echo_nofiles
-        if: steps.filesadded.outputs.if_false == 0
-      - run: |
-          echo "no files added"
+  process-files:
+    needs: set-matrix
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: needs.set-matrix.outputs.matrix
+      steps:
+        - run: echo ${{matrix}}
 
-      - name: Send mail
-        if: steps.filesadded.outputs.if_true == 1
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: smtp.gmail.com
-          server_port: 465
-          username: ${{secrets.MAIL_USERNAME}}
-          password: ${{secrets.MAIL_PASSWORD}}
-          subject: Github Actions job result
-          to: royashbrook@me.com
-          from: GitMFT # <user@example.com>
-          body: Files added - ${{ steps.files.outputs.added }}
-          attachments: ${{ steps.files.outputs.added }}
 
-      - name: Remove File
-        if: steps.filesadded.outputs.if_true == 1
-        uses: JesseTG/rm@v1.0.2
-        with:
-          path: steps.files.outputs.added
+  # process-smtp:
+  #   runs-on: ubuntu-latest
+  #   steps:
+      
+  #     - uses: actions/checkout@v2
 
-      - name: Push changes
-        if: steps.filesadded.outputs.if_true == 1
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
+  #     - id: files
+  #       uses: jitterbit/get-changed-files@v1
+  #       with:
+  #         format: 'csv'
+
+  #     - name: No Files Added
+  #       if: steps.files.outputs.added == ''
+  #       run: echo "No Files Added"
+
+  #     - name: Send mail
+  #       if: steps.files.outputs.added != ''
+  #       uses: dawidd6/action-send-mail@v3
+  #       with:
+  #         server_address: smtp.gmail.com
+  #         server_port: 465
+  #         username: ${{secrets.MAIL_USERNAME}}
+  #         password: ${{secrets.MAIL_PASSWORD}}
+  #         subject: Github Actions job result
+  #         to: royashbrook@me.com
+  #         from: GitMFT # <user@example.com>
+  #         body: Files added - ${{ steps.files.outputs.added }}
+  #         attachments: ${{ steps.files.outputs.added }}
+
+  #     - name: Remove File
+  #       if: steps.files.outputs.added != ''
+  #       uses: JesseTG/rm@v1.0.2
+  #       with:
+  #         path: steps.files.outputs.added
+
+  #     - name: Push changes
+  #       if: steps.files.outputs.added != ''
+  #       uses: ad-m/github-push-action@master
+  #       with:
+  #         github_token: ${{ secrets.GITHUB_TOKEN }}
+  #         branch: ${{ github.ref }}
