@@ -1,4 +1,4 @@
-name: smtp
+name: del
 on:
   push:
     branches: [ main ]
@@ -33,7 +33,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: fregante/setup-git-user@v1
       - run: |
-          git rm --cached '${{matrix.added-file}}'
-          git commit -m 'remove ${{ matrix.added-file }}' '${{matrix.added-file}}'
-          git push -f
+          git rm '${{matrix.added-file}}'
+          git commit -m "removed file ${{ matrix.added-file }}"
+          git push --force
   
