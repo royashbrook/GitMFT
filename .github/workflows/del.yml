@@ -40,7 +40,7 @@ jobs:
       - name: Remove Files
         shell: pwsh
         run: |
-          $files = ${{ needs.job1.outputs.matrix }} | convertfrom-json
+          $files = '${{ needs.job1.outputs.matrix }}' | convertfrom-json
           foreach($file in $files) {
             if(test-path $file){
               write-output "Removing $file"
