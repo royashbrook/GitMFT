@@ -45,8 +45,4 @@ jobs:
             git rm $f
           done
       - uses: stefanzweifel/git-auto-commit-action@v4
-      
-      # - run: git commit -m "removed file ${{ matrix.added-file }}"
-      # - run: git pull --tags origin main
-      # # git pull
-      # - run: git push --force
+
