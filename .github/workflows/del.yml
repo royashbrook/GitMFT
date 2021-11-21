@@ -35,4 +35,5 @@ jobs:
       - uses: fregante/setup-git-user@v1
       - run: git rm '${{matrix.added-file}}'
       - run: git commit -m "removed file ${{ matrix.added-file }}"
+      - run: git pull
       - run: git push --force
