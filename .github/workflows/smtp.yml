@@ -41,8 +41,8 @@ jobs:
           subject: Github Actions job result
           to: royashbrook@me.com
           from: GitMFT # <user@example.com>
-          body: Files added - ${{ steps.files.outputs.added }}
-          attachments: ${{ steps.files.outputs.added }}
+          body: Files added - ${{ matrix.added-file }}
+          attachments: ${{ matrix.added-file }}
       - name: Remove File
         uses: JesseTG/rm@v1.0.2
         with:
