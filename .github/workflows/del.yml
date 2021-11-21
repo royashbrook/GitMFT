@@ -30,7 +30,9 @@ jobs:
     steps:
       - run: echo ${{matrix.added-file}}
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - uses: fregante/setup-git-user@v1
       - run: git rm '${{matrix.added-file}}'
       - run: git commit -m "removed file ${{ matrix.added-file }}"
-      - run: git pull && git push --force
+      - run: git push --force
