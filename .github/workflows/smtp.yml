@@ -21,13 +21,15 @@ jobs:
         with:
           format: 'json'
 
-  job2:
-    needs: job1
-    runs-on: ubuntu-latest
-    strategy:
-      matrix: ${{fromJson(needs.job1.outputs.matrix)}}
-    steps:
-      - run: echo ${{matrix}}
+      - run: echo ${{steps.files.outputs.added}}
+
+  # job2:
+  #   needs: job1
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix: ${{fromJson(needs.job1.outputs.matrix)}}
+  #   steps:
+  #     - run: echo ${{matrix}}
 
 
   # process-smtp:
