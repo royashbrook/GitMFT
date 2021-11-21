@@ -31,18 +31,18 @@ jobs:
     steps:
       - run: echo ${{matrix.added-file}}
       - uses: actions/checkout@v2
-      - name: Send mail
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: smtp.gmail.com
-          server_port: 465
-          username: ${{secrets.MAIL_USERNAME}}
-          password: ${{secrets.MAIL_PASSWORD}}
-          subject: Github Actions job result
-          to: royashbrook@me.com
-          from: GitMFT # <user@example.com>
-          body: Files added - ${{ matrix.added-file }}
-          attachments: ${{ matrix.added-file }}
+      # - name: Send mail
+      #   uses: dawidd6/action-send-mail@v3
+      #   with:
+      #     server_address: smtp.gmail.com
+      #     server_port: 465
+      #     username: ${{secrets.MAIL_USERNAME}}
+      #     password: ${{secrets.MAIL_PASSWORD}}
+      #     subject: Github Actions job result
+      #     to: royashbrook@me.com
+      #     from: GitMFT # <user@example.com>
+      #     body: Files added - ${{ matrix.added-file }}
+      #     attachments: ${{ matrix.added-file }}
       - name: Remove file
         uses: JesseTG/rm@v1.0.2
         with:
