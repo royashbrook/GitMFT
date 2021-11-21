@@ -29,7 +29,6 @@ jobs:
         added-file: ${{fromJson(needs.job1.outputs.matrix)}}
     steps:
       - run: echo "${{matrix.added-file}}"
-      - run: ls "${{matrix.added-file}}"
 
   job3:
     needs: [job1,job2]
