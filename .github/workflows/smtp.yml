@@ -26,6 +26,7 @@ jobs:
     if: needs.job1.outputs.matrix != '[]'
     runs-on: ubuntu-latest
     strategy:
+      max-parallel: 1
       matrix:
         added-file: ${{fromJson(needs.job1.outputs.matrix)}}
     steps:
