@@ -46,7 +46,7 @@ jobs:
       #     body: Files added - ${{ matrix.added-file }}
       #     attachments: ${{ matrix.added-file }}
       - run: |
-          git rm "${{matrix.added-file}}"
+          git rm ${{matrix.added-file}}
           git checkout --ours -- ${{matrix.added-file}}
           git commit -m 'remove ${{ matrix.added-file }}'
           git push -f
