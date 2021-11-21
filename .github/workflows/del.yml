@@ -12,10 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - id: files-csv
+      - id: files-space
         uses: jitterbit/get-changed-files@v1
-        with:
-          format: 'csv'
       - id: files-json
         uses: jitterbit/get-changed-files@v1
         with:
@@ -23,7 +21,7 @@ jobs:
       - run: echo ${{steps.files.outputs.added}}
     outputs:
       json: ${{ steps.files-json.outputs.added }}
-      csv: ${{ steps.files-csv.outputs.added }}
+      space: ${{ steps.files-space.outputs.added }}
 
   job2:
     needs: job1
@@ -39,7 +37,16 @@ jobs:
     needs: [job1,job2]
     runs-on: ubuntu-latest
     steps:
+      - run: echo ${{needs.job1.outputs.space}}
       - uses: actions/checkout@v2
       - uses: fregante/setup-git-user@v1
-      - run: git rm ${{needs.job1.outputs.csv}}
+      - run: |
+          for f in ${{needs.job1.outputs.space}}; do
+            git rm $f
+          done
       - uses: stefanzweifel/git-auto-commit-action@v4
+      
+      # - run: git commit -m "removed file ${{ matrix.added-file }}"
+      # - run: git pull --tags origin main
+      # # git pull
+      # - run: git push --force
