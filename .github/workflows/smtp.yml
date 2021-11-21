@@ -28,6 +28,11 @@ jobs:
           if_true: 1
           if_false: 0
 
+      - id: echo_nofiles
+        if: steps.filesadded.outputs.if_false == 0
+      - run: |
+          echo "no files added"
+
       - name: Send mail
         if: steps.filesadded.outputs.if_true == 1
         uses: dawidd6/action-send-mail@v3
