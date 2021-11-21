@@ -12,21 +12,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - id: files
+      - id: files-csv
+        uses: jitterbit/get-changed-files@v1
+        with:
+          format: 'csv'
+      - id: files-json
         uses: jitterbit/get-changed-files@v1
         with:
           format: 'json'
       - run: echo ${{steps.files.outputs.added}}
     outputs:
-      matrix: ${{ steps.files.outputs.added }}
+      json: ${{ steps.files-json.outputs.added }}
+      csv: ${{ steps.files-csv.outputs.added }}
 
   job2:
     needs: job1
-    if: needs.job1.outputs.matrix != '[]'
+    if: needs.job1.outputs.json != '[]'
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        added-file: ${{fromJson(needs.job1.outputs.matrix)}}
+        added-file: ${{fromJson(needs.job1.outputs.json)}}
     steps:
       - run: echo "${{matrix.added-file}}"
 
@@ -34,25 +39,7 @@ jobs:
     needs: [job1,job2]
     runs-on: ubuntu-latest
     steps:
-      - run: echo ${{needs.job1.outputs.matrix}}
       - uses: actions/checkout@v2
       - uses: fregante/setup-git-user@v1
-      - name: Remove Files
-        shell: pwsh
-        run: |
-          $files = '${{ needs.job1.outputs.matrix }}' | convertfrom-json
-          foreach($file in $files) {
-            if(test-path $file){
-              write-output "Removing $file"
-              git rm ".\$file"
-            }else{
-              write-output "Can't find $file"
-            }
-            
-          }
+      - run: git rm ${{needs.job1.outputs.csv}}
       - uses: stefanzweifel/git-auto-commit-action@v4
-      
-      # - run: git commit -m "removed file ${{ matrix.added-file }}"
-      # - run: git pull --tags origin main
-      # # git pull
-      # - run: git push --force
