@@ -12,13 +12,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - id: files
+      - id: files-space
+        uses: jitterbit/get-changed-files@v1
+      - id: files-json
         uses: jitterbit/get-changed-files@v1
         with:
           format: 'json'
       - run: echo ${{steps.files.outputs.added}}
     outputs:
-      files: ${{ steps.files.outputs.added }}
+      json: ${{ steps.files-json.outputs.added }}
+      space: ${{ steps.files-space.outputs.added }}
 
   job2:
     needs: job1
@@ -26,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        added-file: ${{fromJson(needs.job1.outputs.files)}}
+        added-file: ${{fromJson(needs.job1.outputs.json)}}
     steps:
       - run: echo "${{matrix.added-file}}"
 
@@ -38,9 +41,8 @@ jobs:
       - uses: actions/checkout@v2
       - uses: fregante/setup-git-user@v1
       - run: |
-          readarray -t ff <<<"$(jq -r '.[]' <<<'${{ needs.job1.outputs.files }}')"
-          for f in ${ff[@]}; do
-            git rm "${f}"
+          for f in ${{needs.job1.outputs.space}}; do
+            git rm $f
           done
       - uses: stefanzweifel/git-auto-commit-action@v4
 
