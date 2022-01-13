@@ -1,0 +1,12 @@
+name: del
+on:
+  workflow_dispatch:
+
+jobs:
+
+  job1:
+    runs-on: windows-latest
+    steps:
+      - name: Test VPN
+        shell: pwsh
+        run: rasdial /?
