@@ -1,4 +1,4 @@
-name: del
+name: test
 on:
   workflow_dispatch:
 
